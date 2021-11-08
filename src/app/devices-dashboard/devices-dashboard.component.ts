@@ -1,7 +1,5 @@
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
-import { map } from 'rxjs/operators';
-import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
-import { StateService } from '../state.service';
+import { Component } from '@angular/core';
+import { HttpService } from '../http.service';
 
 interface DeviceItem {
   id: number,
@@ -11,39 +9,43 @@ interface DeviceItem {
   updateAt: string,
   CategoryId: number,
 };
+interface CategoryItem {
+  id: number,
+  name: string,
+  createdAt: string,
+  updatedAt: string,
+};
 
 @Component({
   selector: 'app-devices-dashboard',
   templateUrl: './devices-dashboard.component.html',
   styleUrls: ['./devices-dashboard.component.scss']
 })
-export class DevicesDashboardComponent implements OnInit {
-  devices = this.stateService.devices;
+export class DevicesDashboardComponent {
+  allDevices: DeviceItem[] = [];
+  devices: DeviceItem[] = [];
+  categories: CategoryItem[] = [];
+  hasDevices: boolean = false;
+  isLoading: boolean = true;
+  categorySelection!: number;
 
-  /** Based on the screen size, switch from standard to one column per row */
-  cards = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
-    map(({ matches }) => {
-      if (matches) {
-        return [
-          { title: this.devices[0].color, cols: 1, rows: 1 },
-          { title: this.devices[1].color, cols: 1, rows: 1 },
-          { title: this.devices[2].color, cols: 1, rows: 1 },
-          { title: this.devices[3].color, cols: 1, rows: 1 }
-        ];
-      }
+  constructor(private httpService: HttpService) {
+    this.httpService.getDevices().subscribe((res: DeviceItem[]) => {
+      this.httpService.getCategories().subscribe((res: CategoryItem[]) => {
+        this.categories = res;
+      });
+      this.allDevices = res;
+      this.devices = res;
+      this.hasDevices = this.devices[0] instanceof Object;
+      this.isLoading = false;
+    });
+  }
 
-      return [
-        { title: this.devices[0].color, cols: 2, rows: 1 },
-        { title: this.devices[1].color, cols: 1, rows: 1 },
-        { title: this.devices[2].color, cols: 1, rows: 2 },
-        { title: this.devices[3].color, cols: 1, rows: 1 }
-      ];
-    })
-  );
+  categoryName(id: number) {
+    return this.categories.filter((category) => category.id === id)[0].name;
+  }
 
-  constructor(private breakpointObserver: BreakpointObserver, private stateService: StateService) {}
-
-  ngOnInit() {
-    console.log(this.devices);
+  handleCategorySelection() {
+    this.devices = this.categorySelection === -1 ? this.allDevices : this.allDevices.filter((device) => device.CategoryId === this.categorySelection);
   }
 }

@@ -27,9 +27,9 @@ export class AppComponent implements OnInit {
   constructor(private httpService: HttpService, private stateService: StateService) {}
 
   ngOnInit() {
-    this.httpService.getDevices().subscribe((res: DeviceItem[]) => {
-      this.stateService.devices = res;
-    });
+    // this.httpService.getDevices().subscribe((res: DeviceItem[]) => {
+    //   this.stateService.devices = res;
+    // });
     this.httpService.getCategories().subscribe((res: CategoryItem[]) => {
       this.stateService.categories = res;
     });

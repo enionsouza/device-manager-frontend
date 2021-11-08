@@ -19,3 +19,37 @@
 .dashboard-card-content {
   text-align: center;
 }
+
+.centered-position {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.no-content {
+  color: red;
+  padding-top: 30vh;
+  font-size: 1.5em;
+}
+
+.loading {
+  padding-top: 30vh;
+  font-size: 1.5em;
+}
+
+.grid-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.device-properties > ul {
+  list-style: none;
+  text-align: left;
+  padding-left: 1em;
+}
+
+.device-dashboard-options {
+  display: flex;
+  gap: 1em;
+}
